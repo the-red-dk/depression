@@ -34,15 +34,21 @@ function App() {
   }
 
   const handleProceed = () => {
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
-      // Try to open Instagram app, fallback to web if app is not installed
+      // Try to open Instagram app
+      const startTime = Date.now();
       window.location.href = 'instagram://';
-      // Fallback to web version after a short delay if app doesn't open
+      
+      // Check if app opened by monitoring if page is still visible
       setTimeout(() => {
-        window.location.href = 'https://www.instagram.com';
-      }, 1000);
+        const timeElapsed = Date.now() - startTime;
+        if (timeElapsed < 2000 && !document.hidden) {
+          // App likely didn't open, redirect to web
+          window.open('https://www.instagram.com', '_blank');
+        }
+      }, 1500);
     } else {
       // Desktop: redirect to Instagram web
       window.location.href = 'https://www.instagram.com';
