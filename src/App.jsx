@@ -34,9 +34,22 @@ function App() {
   }
 
   const handleProceed = () => {
-    alert('Welcome to the app! Enjoy your experience.')
-    setShowModal(false)
-    setSelectedFeeling(null)
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+      // Try to open Instagram app, fallback to web if app is not installed
+      window.location.href = 'instagram://';
+      // Fallback to web version after a short delay if app doesn't open
+      setTimeout(() => {
+        window.location.href = 'https://www.instagram.com';
+      }, 1000);
+    } else {
+      // Desktop: redirect to Instagram web
+      window.location.href = 'https://www.instagram.com';
+    }
+    
+    setShowModal(false);
+    setSelectedFeeling(null);
   }
 
   const closeModal = () => {
