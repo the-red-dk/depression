@@ -34,21 +34,26 @@ function App() {
   }
 
   const handleProceed = () => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile = window.innerWidth <= 768 && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
     if (isMobile) {
-      // Try to open Instagram app
-      const startTime = Date.now();
-      window.location.href = 'instagram://';
+      // Create a hidden iframe to test if the app opens
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.src = 'instagram://';
+      document.body.appendChild(iframe);
       
-      // Check if app opened by monitoring if page is still visible
+      // Remove iframe after attempt
       setTimeout(() => {
-        const timeElapsed = Date.now() - startTime;
-        if (timeElapsed < 2000 && !document.hidden) {
-          // App likely didn't open, redirect to web
+        document.body.removeChild(iframe);
+      }, 100);
+      
+      // Fallback to web if app doesn't open
+      setTimeout(() => {
+        if (!document.hidden) {
           window.open('https://www.instagram.com', '_blank');
         }
-      }, 1500);
+      }, 1000);
     } else {
       // Desktop: redirect to Instagram web
       window.location.href = 'https://www.instagram.com';
